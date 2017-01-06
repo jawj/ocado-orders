@@ -8,15 +8,15 @@ create database ocado;
 \c ocado
 
 create table products (
-  timestamp int,
+  unixtime int,
   name text,
-  price real
+  price real  -- weird fractional floating-point prices eat your heart out!
 );
 
 \copy products from '/Users/George/Development/ocado-orders/ocado-orders.csv' csv
 
 alter table products add column t timestamp;
-update products set t = to_timestamp(timestamp) at time zone 'Europe/London';
+update products set t = to_timestamp(unixtime) at time zone 'Europe/London';
 
 
 -- analysis
@@ -33,3 +33,4 @@ select count(*) as qty, sum(price) as total, name from products where extract(ye
 
 # total spend by month
 select date_trunc('month', t) as month, sum(price) as total from products group by month order by month asc;
+
